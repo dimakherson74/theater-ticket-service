@@ -31,24 +31,48 @@ class AuthTokenSerializer(serializers.Serializer):
         label=_("Password"), style={"input_type": "password"}
     )
 
+    # def validate(self, attrs):
+    #     email = attrs.get("email")
+    #     password = attrs.get("password")
+    #
+    #     if email and password:
+    #         user = authenticate(email=email, password=password)
+    #
+    #         if user:
+    #             if not user.is_active:
+    #                 msg = _("User account is disabled.")
+    #                 raise serializers.ValidationError(
+    #                     msg, code="authorization"
+    #                 )
+    #         else:
+    #             msg = _("Unable to log in with provided credentials.")
+    #             raise serializers.ValidationError(msg, code="authorization")
+    #     else:
+    #         msg = _("Must include 'username' and 'password'.")
+    #         raise serializers.ValidationError(msg, code="authorization")
+    #
+    #     attrs["user"] = user
+    #     return attrs
+
     def validate(self, attrs):
         email = attrs.get("email")
         password = attrs.get("password")
 
         if email and password:
-            user = authenticate(email=email, password=password)
+            try:
+                user = get_user_model().objects.get(email=email)
+            except get_user_model().DoesNotExist:
+                user = None
 
-            if user:
+            if user and user.check_password(password):
                 if not user.is_active:
                     msg = _("User account is disabled.")
-                    raise serializers.ValidationError(
-                        msg, code="authorization"
-                    )
+                    raise serializers.ValidationError(msg, code="authorization")
             else:
                 msg = _("Unable to log in with provided credentials.")
                 raise serializers.ValidationError(msg, code="authorization")
         else:
-            msg = _("Must include 'username' and 'password'.")
+            msg = _("Must include 'email' and 'password'.")
             raise serializers.ValidationError(msg, code="authorization")
 
         attrs["user"] = user
