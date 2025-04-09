@@ -50,8 +50,8 @@ class TheatreHallSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
-    play = PlaySerializer(read_only=True)
-    theatre_hall = TheatreHallSerializer(read_only=True)
+    # play = PlayListSerializer(read_only=True)
+    # theatre_hall = TheatreHallSerializer(read_only=True)
 
     class Meta:
         model = Performance
