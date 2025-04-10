@@ -1,6 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Actor, Genre, Play, TheatreHall, Performance, Reservation, Ticket
+from .models import (
+    Actor,
+    Genre,
+    Play,
+    TheatreHall,
+    Performance,
+    Reservation,
+    Ticket
+)
 
 User = get_user_model()
 
@@ -24,6 +32,7 @@ class PlaySerializer(serializers.ModelSerializer):
     class Meta:
         model = Play
         fields = ["id", "title", "description", "actors", "genres"]
+
 
 class PlayListSerializer(PlaySerializer):
     genres = serializers.SlugRelatedField(
